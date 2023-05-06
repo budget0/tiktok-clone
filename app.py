@@ -4,7 +4,7 @@ from flask import Flask, render_template
 
 app = Flask(__name__)
 
-RAPIDAPI_KEY = '584f9c0d6bmsh5bbe121062eea1ap158bbfjsn0f162809d61a'
+RAPIDAPI_KEY = 'API'
 RAPIDAPI_HOST = 'reddit-meme.p.rapidapi.com'
 
 @app.route('/')
