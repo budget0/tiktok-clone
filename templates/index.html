@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TikTok Clone</title>
+  <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet">
+</head>
+
+<body>
+  <div id="container">
+    {% for image in images %}
+    <div class="image-container" style="top: {{ loop.index0 * 100 }}vh">
+      <img src="{{ image.src.medium }}" alt="{{ image.photographer }}">
+      <!-- Caption -->
+      <div class="caption">
+        {{ image.photographer }}'s love it like no other... #thicctock #budget0
+      </div>
+      <!-- Comment container -->
+      <div class="comment-container">
+        <div class="comments">
+          <!-- Comments will be added here -->
+        </div>
+        <span class="cross-button">&times;</span>
+
+        <div class="comment-input">
+          <input type="text" placeholder="Write a comment...">
+          <button>Add</button>
+        </div>
+      </div>
+
+
+      <span class="heart-animation">&#x2764;</span> <!-- Heart animation -->
+
+
+      <!-- Button container -->
+      <div class="button-container">
+        <a href="#" class="button like" title="Like">&#x2764;</a> <!-- Like button -->
+
+        <a href="#" class="button" title="Comment">&#x1F4AC;</a> <!-- Comment button -->
+        <a href="#" class="button" title="Share">&#x1F4E2;</a> <!-- Share button -->
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  <script>
+    const container = document.querySelector('#container');
+    let currentIndex = 0;
+    let debounceTimeout = null;
+
+    const likeButtons = document.querySelectorAll('.button.like');
+
+    likeButtons.forEach((button) => {
+      button.addEventListener('click', (e) => {
+        e.preventDefault();
+        button.classList.toggle('active');
+      });
+    });
+
+
+    function handleScroll(e) {
+      if (debounceTimeout) {
+        clearTimeout(debounceTimeout);
+      }
+
+      debounceTimeout = setTimeout(() => {
+        if (e.deltaY > 0 && currentIndex < container.children.length - 1) {
+          // Scrolling down
+          currentIndex++;
+        } else if (e.deltaY < 0 && currentIndex > 0) {
+          // Scrolling up
+          currentIndex--;
+        }
+        container.style.transform = `translateY(-${currentIndex * 100}vh)`;
+      }, 100);
+    }
+
+    window.addEventListener('wheel', handleScroll);
+
+    // ...previous JavaScript code...
+
+    const images = document.querySelectorAll('.image-container img');
+    const heartAnimations = document.querySelectorAll('.heart-animation');
+
+    images.forEach((image, index) => {
+      image.addEventListener('dblclick', (e) => {
+        e.preventDefault();
+        const likeButton = likeButtons[index];
+        likeButton.classList.add('active');
+        const heartAnimation = heartAnimations[index];
+        heartAnimation.style.opacity = '0'; // Updated
+        heartAnimation.style.animation = 'none';
+        setTimeout(() => {
+          heartAnimation.style.animation = 'heart-animation 2.5s forwards';
+          heartAnimation.style.opacity = '0'; // Updated
+        }, 100);
+      });
+    });
+
+    // ...previous JavaScript code...
+    const commentButtons = document.querySelectorAll('.button[title="Comment"]');
+    const commentContainers = document.querySelectorAll('.comment-container');
+    const commentInputs = document.querySelectorAll('.comment-input input');
+    const addCommentButtons = document.querySelectorAll('.comment-input button');
+
+    commentButtons.forEach((button, index) => {
+      button.addEventListener('click', (e) => {
+        e.preventDefault();
+        commentContainers[index].style.display = 'flex';
+      });
+    });
+
+    // Removed the first addCommentButtons.forEach() loop
+
+    // ...previous JavaScript code...
+
+    addCommentButtons.forEach((button, index) => {
+      button.addEventListener('click', () => {
+        const commentText = commentInputs[index].value;
+        if (!commentText) return;
+
+        // Create a comment element with a profile picture and text
+        const commentElement = document.createElement('div');
+        commentElement.classList.add('comment');
+
+        const profilePicture = document.createElement('div');
+        profilePicture.classList.add('profile-picture');
+        // Replace the URL below with a user's profile picture URL
+        profilePicture.style.backgroundImage = 'url(https://datepsychology.com/wp-content/uploads/2022/09/gigachad.jpg)';
+        commentElement.appendChild(profilePicture);
+
+        const textElement = document.createElement('div');
+        textElement.textContent = commentText;
+        commentElement.appendChild(textElement);
+
+        commentContainers[index].querySelector('.comments').appendChild(commentElement);
+        commentInputs[index].value = '';
+      });
+    });
+
+    // ...previous JavaScript code...
+
+    const crossButtons = document.querySelectorAll('.cross-button');
+
+    crossButtons.forEach((button, index) => {
+      button.addEventListener('click', (e) => {
+        e.preventDefault();
+        commentContainers[index].style.display = 'none';
+      });
+    });
+
+
+
+
+
+  </script>
+</body>
+
+</html>
