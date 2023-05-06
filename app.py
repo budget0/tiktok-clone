@@ -1,11 +1,14 @@
+
+
 import random
 import requests
 from flask import Flask, render_template
 
 app = Flask(__name__)
 
-RAPIDAPI_KEY = 'API'
-RAPIDAPI_HOST = 'reddit-meme.p.rapidapi.com'
+PEXELS_API_KEY = 'PASTE_YOUR_PEXEL_API_KEY'
+PEXELS_API_URL = 'https://api.pexels.com/v1/search'
+
 
 @app.route('/')
 def index():
@@ -13,29 +16,18 @@ def index():
     return render_template('index.html', images=images)
 
 def get_random_images():
-    url = f"https://reddit-meme.p.rapidapi.com/memes/trending"
-
-    headers = {
-        "X-RapidAPI-Key": RAPIDAPI_KEY,
-        "X-RapidAPI-Host": RAPIDAPI_HOST,
+    search_terms = ['nature', 'city', 'animals', 'people', 'technology', 'abstract']
+    search_term = random.choice(search_terms)
+    params = {
+        'query': search_term,
+        'per_page': 30,
     }
-
-    response = requests.get(url, headers=headers)
+    headers = {
+        'Authorization': PEXELS_API_KEY
+    }
+    response = requests.get(PEXELS_API_URL, params=params, headers=headers)
     data = response.json()
-
-    images = []
-    for post in data:
-        if post['url'].endswith(('.jpg', '.png', '.jpeg', '.gif')):
-            images.append({'src': {'medium': post['url']}, 'photographer': post['title']})
-
-    # If there are less than 5 images, add duplicates to make it 5
-    while len(images) < 5:
-        images += images
-
-    return images
-
-
-
+    return data['photos']
 
 if __name__ == '__main__':
     app.run(debug=True)
